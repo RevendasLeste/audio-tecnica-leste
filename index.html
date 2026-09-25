@@ -1,0 +1,541 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>O Pulo do Gato – Revendas</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Cabin+Sketch:wght@400;700&family=Kalam:wght@300;400&family=Figtree:wght@400;500;600;700&display=swap">
+<style>
+:root{
+  color-scheme: dark;
+  --bg:#07030b;
+  --bg-2:#120818;
+  --surface:#170b20;
+  --surface-2:#221030;
+  --line:#3a1d4d;
+  --ink:#f6eefb;
+  --ink-2:#c9b5d6;
+  --ink-3:#8f7a9e;
+  --purpura:#b026ff;
+  --purpura-2:#8a2be2;
+  --magenta:#ff2fa8;
+  --laranja:#ff6a3d;
+  --glow:0 0 18px rgba(176,38,255,.55),0 0 42px rgba(255,47,168,.25);
+  --ok:#3fd68a;
+  --erro:#ff6b6b;
+  --f-titulo:"Cabin Sketch","Comic Sans MS",cursive;
+  --f-giz:"Kalam","Segoe Print",cursive;
+  --f-corpo:"Figtree",system-ui,-apple-system,"Segoe UI",sans-serif;
+}
+*{box-sizing:border-box}
+html,body{background:var(--bg);color:var(--ink)}
+body{font-family:var(--f-corpo);font-size:15px;line-height:1.5;min-height:100%;padding-inline:16px;padding-block:0 48px;position:relative;overflow-x:hidden}
+#formulas{position:fixed;inset:0;width:100%;height:100%;z-index:0;pointer-events:none}
+.vinheta{position:fixed;inset:0;z-index:0;pointer-events:none;background:radial-gradient(ellipse at 50% 55%,rgba(7,3,11,.2) 0%,rgba(7,3,11,.75) 60%,rgba(7,3,11,.95) 100%)}
+.wrap{position:relative;z-index:1;max-width:920px;margin:0 auto}
+
+/* topo */
+.topo{display:flex;align-items:center;justify-content:space-between;gap:16px;padding-block:28px 8px;flex-wrap:wrap}
+.marca h1{font-family:var(--f-titulo);font-weight:400;font-size:clamp(34px,7vw,64px);letter-spacing:.06em;line-height:1;margin:0;text-transform:uppercase;text-wrap:balance;text-shadow:0 0 12px rgba(255,255,255,.15)}
+.marca h1 b{font-weight:700;color:#fff}
+.marca .sub{font-family:var(--f-titulo);font-size:clamp(18px,3.4vw,28px);letter-spacing:.34em;text-transform:uppercase;color:var(--magenta);margin-top:6px;text-shadow:0 0 14px rgba(255,47,168,.6)}
+.pilula{flex:none;width:150px;height:70px;border-radius:40px;border:3px solid var(--purpura);box-shadow:var(--glow),inset 0 0 18px rgba(176,38,255,.45);display:grid;place-items:center end;padding-right:12px;position:relative}
+.pilula svg{width:62px;height:56px;filter:drop-shadow(0 0 6px var(--magenta))}
+
+/* abas */
+.abas{display:flex;gap:6px;margin-block:22px 20px;border-bottom:1px solid var(--line)}
+.aba{appearance:none;background:none;border:0;color:var(--ink-3);font:600 14px var(--f-corpo);padding:10px 14px;cursor:pointer;border-bottom:2px solid transparent;margin-bottom:-1px;letter-spacing:.02em}
+.aba[aria-selected="true"]{color:var(--ink);border-color:var(--magenta)}
+.aba:hover{color:var(--ink)}
+.aba .cad{font-size:12px;opacity:.8;margin-left:4px}
+
+button:focus-visible,input:focus-visible,textarea:focus-visible,.terr:focus-visible{outline:2px solid var(--magenta);outline-offset:2px}
+
+.etapa{display:flex;align-items:baseline;gap:12px;margin-block:0 12px}
+.etapa .n{font-family:var(--f-giz);font-size:22px;color:var(--magenta);min-width:1.4em}
+.etapa h2{font-size:clamp(19px,3vw,23px);margin:0;font-weight:700;text-wrap:balance}
+.etapa p{margin:2px 0 0;color:var(--ink-2)}
+section.bloco{margin-bottom:36px}
+
+/* territórios (quadro) */
+.quadro{background:#0b0a0d;border:10px solid #7a2e1d;border-radius:4px;box-shadow:0 0 0 1px #3b140c inset,0 18px 40px rgba(0,0,0,.6),0 0 60px rgba(255,47,168,.15);padding:18px 14px}
+.territorios{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:10px}
+.terr{appearance:none;background:rgba(255,255,255,.02);border:1.5px dashed rgba(255,255,255,.18);border-radius:10px;color:#e9e4ee;padding:16px 8px;cursor:pointer;text-align:center;font-family:var(--f-titulo);line-height:1.02;min-height:128px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:2px;transition:border-color .15s,background .15s,box-shadow .15s}
+.terr:hover{border-color:rgba(255,255,255,.45)}
+.terr .p{font-size:12px;letter-spacing:.2em}
+.terr .g{font-size:clamp(22px,2.6vw,28px);overflow-wrap:anywhere;font-weight:700;letter-spacing:.03em}
+.terr .s{font-family:var(--f-giz);font-size:17px;color:#d6c9e2}
+.terr .l{font-size:11px;letter-spacing:.3em}
+.terr[aria-pressed="true"]{border:1.5px solid var(--magenta);background:rgba(255,47,168,.1);box-shadow:0 0 18px rgba(255,47,168,.35)}
+.terr[aria-pressed="true"]::after{content:"Selecionado";font-family:var(--f-corpo);font-size:11px;letter-spacing:.08em;text-transform:uppercase;color:var(--magenta);margin-top:8px;font-weight:700}
+.quadro .rodape{font-family:var(--f-giz);text-align:center;color:#ddd;margin-top:12px;font-size:17px}
+
+/* escala */
+.escala{display:grid;grid-template-columns:repeat(5,1fr);gap:6px;margin:14px 0 18px}
+.escala div{background:var(--surface);border:1px solid var(--line);border-radius:8px;padding:8px 6px;text-align:center;font-size:12.5px;color:var(--ink-2);line-height:1.25}
+.escala b{display:block;font-family:var(--f-giz);font-size:22px;color:var(--ink);line-height:1}
+.escala div:last-child{border-color:var(--magenta);color:var(--ink)}
+
+/* temas */
+.temas{display:flex;flex-direction:column;border:1px solid var(--line);border-radius:12px;background:rgba(23,11,32,.82);backdrop-filter:blur(2px)}
+.tema{display:grid;grid-template-columns:1fr auto;gap:10px 16px;align-items:center;padding:12px 14px;border-top:1px solid var(--line)}
+.tema:first-child{border-top:0}
+.tema .nome{font-weight:600}
+.tema .det{display:block;font-weight:400;color:var(--ink-3);font-size:13px}
+.tema.falta{background:rgba(255,107,107,.07)}
+.notas{display:flex;gap:6px}
+.nota{appearance:none;width:40px;height:40px;border-radius:50%;border:1.5px solid var(--line);background:var(--bg-2);color:var(--ink-2);font:700 15px var(--f-corpo);cursor:pointer;transition:transform .1s,background .15s,border-color .15s}
+.nota:hover{border-color:var(--purpura);color:var(--ink)}
+.nota[aria-checked="true"]{background:linear-gradient(135deg,var(--purpura),var(--magenta));border-color:transparent;color:#fff;box-shadow:0 0 12px rgba(255,47,168,.55)}
+.outro-txt{grid-column:1/-1;width:100%;background:var(--bg-2);border:1px solid var(--line);border-radius:8px;color:var(--ink);font:14px var(--f-corpo);padding:10px 12px;resize:vertical;min-height:44px}
+.outro-txt::placeholder{color:var(--ink-3)}
+@media (max-width:560px){
+  .tema{grid-template-columns:1fr}
+  .notas{justify-content:space-between}
+  .nota{width:44px;height:44px}
+  .escala{grid-template-columns:repeat(5,minmax(0,1fr));gap:4px}
+  .escala div{font-size:11px;padding:6px 3px}
+  .pilula{width:112px;height:54px}
+  .pilula svg{width:46px;height:42px}
+}
+
+.acoes{display:flex;flex-wrap:wrap;align-items:center;gap:14px;margin-top:18px}
+.btn{appearance:none;border:0;border-radius:999px;padding:13px 26px;font:700 15px var(--f-corpo);cursor:pointer;color:#fff;background:linear-gradient(135deg,var(--purpura-2),var(--magenta));box-shadow:0 0 22px rgba(176,38,255,.45)}
+.btn:disabled{opacity:.5;cursor:not-allowed}
+.btn.sec{background:transparent;border:1.5px solid var(--line);box-shadow:none;color:var(--ink-2)}
+.msg{font-size:14px;color:var(--ink-2)}
+.msg.erro{color:var(--erro)}
+.msg.ok{color:var(--ok)}
+
+.aviso{border:1px solid var(--line);background:var(--surface);border-radius:10px;padding:12px 14px;color:var(--ink-2);font-size:14px;margin-bottom:18px}
+
+.obrigado{text-align:center;padding:40px 16px;border:1px solid var(--line);border-radius:14px;background:rgba(23,11,32,.85)}
+.obrigado h2{font-family:var(--f-titulo);font-size:clamp(28px,5vw,40px);margin:0 0 8px;letter-spacing:.04em}
+.obrigado p{color:var(--ink-2);margin:0 auto 18px;max-width:52ch}
+
+/* login */
+.login{max-width:420px;margin:30px auto;padding:26px;border:1px solid var(--line);border-radius:14px;background:rgba(23,11,32,.9)}
+.login h2{margin:0 0 4px;font-size:20px}
+.login p{margin:0 0 16px;color:var(--ink-2);font-size:14px}
+.login label{display:block;font-size:12px;text-transform:uppercase;letter-spacing:.08em;color:var(--ink-3);margin-bottom:6px}
+.login input{width:100%;background:var(--bg-2);border:1px solid var(--line);border-radius:8px;color:var(--ink);font:15px var(--f-corpo);padding:12px}
+.login .acoes{margin-top:14px}
+
+/* dashboard */
+.dash-topo{display:flex;flex-wrap:wrap;gap:10px;justify-content:space-between;align-items:center;margin-bottom:16px}
+.dash-topo h2{margin:0;font-size:22px}
+.filtros{display:flex;flex-wrap:wrap;gap:6px;margin-bottom:18px}
+.chip{appearance:none;border:1px solid var(--line);background:var(--surface);color:var(--ink-2);border-radius:999px;padding:7px 13px;font:600 13px var(--f-corpo);cursor:pointer}
+.chip[aria-pressed="true"]{background:var(--ink);color:var(--bg);border-color:var(--ink)}
+.kpis{display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:10px;margin-bottom:22px}
+.kpi{background:var(--surface);border:1px solid var(--line);border-radius:12px;padding:14px 16px}
+.kpi .r{font-size:12px;text-transform:uppercase;letter-spacing:.08em;color:var(--ink-3)}
+.kpi .v{font-size:30px;font-weight:700;font-variant-numeric:tabular-nums;line-height:1.15;margin-top:4px}
+.kpi .v.txt{font-size:17px;line-height:1.3}
+.kpi .d{font-size:13px;color:var(--ink-2)}
+.painel{background:var(--surface);border:1px solid var(--line);border-radius:12px;padding:16px;margin-bottom:18px}
+.painel h3{margin:0 0 2px;font-size:16px}
+.painel .exp{margin:0 0 14px;color:var(--ink-3);font-size:13px}
+.rank{display:flex;flex-direction:column;gap:2px}
+.linha{display:grid;grid-template-columns:24px minmax(0,1.3fr) minmax(0,1.6fr) 56px;gap:10px;align-items:center;padding:6px 4px;border-radius:6px;position:relative}
+.linha:hover{background:var(--surface-2)}
+.linha .pos{font-variant-numeric:tabular-nums;color:var(--ink-3);font-size:13px;text-align:right}
+.linha .tn{font-size:14px;overflow-wrap:anywhere}
+.barra{height:14px;background:rgba(255,255,255,.04);border-radius:0 4px 4px 0;position:relative}
+.barra i{display:block;height:100%;border-radius:0 4px 4px 0;background:var(--purpura)}
+.linha.top .barra i{background:var(--magenta)}
+.linha .val{text-align:right;font-variant-numeric:tabular-nums;font-weight:700}
+.dica{position:absolute;right:64px;top:-34px;background:var(--ink);color:var(--bg);font-size:12px;padding:5px 9px;border-radius:6px;white-space:nowrap;pointer-events:none;opacity:0;transition:opacity .12s;z-index:3}
+.linha:hover .dica,.linha:focus-within .dica{opacity:1}
+@media (max-width:560px){
+  .linha{grid-template-columns:20px 1fr 48px;grid-template-areas:"p n v" "p b b"}
+  .linha .pos{grid-area:p}.linha .tn{grid-area:n}.linha .barra{grid-area:b}.linha .val{grid-area:v}
+  .dica{display:none}
+}
+.dist{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:10px}
+.dist .t{background:var(--bg-2);border:1px solid var(--line);border-radius:10px;padding:10px 12px}
+.dist .t b{display:block;font-size:22px;font-variant-numeric:tabular-nums}
+.dist .t span{font-size:13px;color:var(--ink-2)}
+.minibar{height:6px;border-radius:3px;background:rgba(255,255,255,.06);margin-top:8px}
+.minibar i{display:block;height:100%;border-radius:3px;background:var(--purpura)}
+.tabela-wrap{overflow-x:auto}
+table{width:100%;border-collapse:collapse;font-size:13.5px}
+th,td{text-align:left;padding:8px 10px;border-bottom:1px solid var(--line);vertical-align:top}
+th{color:var(--ink-3);font-weight:600;font-size:12px;text-transform:uppercase;letter-spacing:.06em}
+td.num{text-align:right;font-variant-numeric:tabular-nums}
+.vazio{color:var(--ink-3);font-size:14px;padding:6px 0}
+.selo{display:inline-block;font-size:11px;padding:2px 8px;border-radius:999px;background:var(--surface-2);color:var(--ink-2);border:1px solid var(--line)}
+
+@media (prefers-reduced-motion:reduce){*{transition:none!important}}
+</style>
+</head>
+<body>
+
+<canvas id="formulas" aria-hidden="true"></canvas>
+<div class="vinheta" aria-hidden="true"></div>
+
+<div class="wrap">
+  <header class="topo">
+    <div class="marca">
+      <h1>O Pulo do <b>Gato</b></h1>
+      <div class="sub">Revendas</div>
+    </div>
+    <div class="pilula" aria-hidden="true">
+      <svg viewBox="0 0 64 58"><path d="M32 54 C10 40 3 29 3 18 C3 9 10 3 18 3 C24 3 29 7 32 12 C35 7 40 3 46 3 C54 3 61 9 61 18 C61 29 54 40 32 54Z" fill="none" stroke="#ff2fa8" stroke-width="3.5"/><text x="32" y="33" text-anchor="middle" font-family="Figtree,sans-serif" font-weight="700" font-size="17" fill="#ffd0ec">+L</text></svg>
+    </div>
+  </header>
+
+  <nav class="abas" role="tablist">
+    <button class="aba" role="tab" id="aba-votar" aria-selected="true" aria-controls="tela-votar">Votação dos GVs</button>
+    <button class="aba" role="tab" id="aba-consumer" aria-selected="false" aria-controls="tela-consumer">Visão Consumer <span class="cad">(acesso GP)</span></button>
+  </nav>
+
+  <!-- VOTAÇÃO -->
+  <main id="tela-votar" role="tabpanel" aria-labelledby="aba-votar">
+    <div class="aviso" id="aviso-db" hidden></div>
+
+    <div id="form-voto">
+      <section class="bloco">
+        <div class="etapa"><span class="n">1.</span><div><h2>Qual é o seu território?</h2><p>Escolha a sua estrela antes de votar.</p></div></div>
+        <div class="quadro">
+          <div class="territorios" id="territorios"></div>
+          <div class="rodape">Está na força de todas essas estrelas juntas</div>
+        </div>
+      </section>
+
+      <section class="bloco">
+        <div class="etapa"><span class="n">2.</span><div><h2>Qual tema da áudio técnica quinzenal faz mais diferença para você?</h2><p>Dê uma nota de 1 a 5 para cada tema, pensando no que é mais importante para o seu negócio hoje.</p></div></div>
+        <div class="escala" id="escala"></div>
+        <div class="temas" id="temas"></div>
+        <div class="acoes">
+          <button class="btn" id="enviar" type="button">Enviar meu voto</button>
+          <span class="msg" id="msg" role="status" aria-live="polite"></span>
+        </div>
+      </section>
+    </div>
+
+    <div class="obrigado" id="obrigado" hidden>
+      <h2>Voto registrado!</h2>
+      <p id="obrigado-txt">Obrigado. O time Consumer vai usar as notas para montar o calendário das próximas áudios técnicas.</p>
+      <button class="btn sec" id="rever" type="button">Revisar meu voto</button>
+    </div>
+  </main>
+
+  <!-- CONSUMER -->
+  <main id="tela-consumer" role="tabpanel" aria-labelledby="aba-consumer" hidden>
+    <form class="login" id="login">
+      <h2>Visão Consumer</h2>
+      <p>Área exclusiva dos Gerentes de Parceiros.</p>
+      <label for="senha">Senha</label>
+      <input id="senha" type="password" autocomplete="off" placeholder="Digite a senha">
+      <div class="acoes"><button class="btn" type="submit">Entrar</button><span class="msg" id="msg-login" role="status" aria-live="polite"></span></div>
+    </form>
+
+    <div id="dash" hidden>
+      <div class="dash-topo">
+        <h2>Resultado da votação</h2>
+        <div style="display:flex;gap:8px;align-items:center;flex-wrap:wrap"><span class="selo" id="atualizado">Carregando…</span><button type="button" class="chip" id="recarregar">Atualizar</button><button type="button" class="chip" id="sair">Sair</button></div>
+      </div>
+      <div class="filtros" id="filtros" role="group" aria-label="Filtrar por território"></div>
+      <div class="kpis" id="kpis"></div>
+
+      <div class="painel">
+        <h3>Ranking dos temas</h3>
+        <p class="exp">Nota média de 1 a 5. Em destaque, os 3 temas mais pedidos.</p>
+        <div class="rank" id="rank"></div>
+      </div>
+
+      <div class="painel">
+        <h3>Participação por território</h3>
+        <p class="exp">Quantidade de GVs que votaram.</p>
+        <div class="dist" id="dist"></div>
+      </div>
+
+      <div class="painel">
+        <h3>Sugestões em "Outros"</h3>
+        <p class="exp">Temas sugeridos livremente pelos GVs.</p>
+        <div class="tabela-wrap"><table><thead><tr><th>Território</th><th>Sugestão</th><th class="num">Nota</th></tr></thead><tbody id="outros"></tbody></table></div>
+      </div>
+
+      <div class="painel">
+        <h3>Tabela completa</h3>
+        <p class="exp">Média, quantidade de notas 5 e notas 1 por tema.</p>
+        <div class="tabela-wrap"><table><thead><tr><th>Tema</th><th class="num">Média</th><th class="num">Notas 5</th><th class="num">Notas 1</th><th class="num">Votos</th></tr></thead><tbody id="tabela"></tbody></table></div>
+      </div>
+    </div>
+  </main>
+</div>
+
+<script>
+(function(){
+  /* =========================================================
+     CONFIGURAÇÃO: cole aqui o endereço do App da Web do
+     Google Apps Script (termina em /exec). Veja o passo a passo.
+     ========================================================= */
+  const URL_PLANILHA = "COLE_AQUI_A_URL_DO_APPS_SCRIPT";
+
+  const TERRITORIOS = [
+    {id:"cria", nome:"Grande Cria do Rio", html:'<span class="p">GRANDE</span><span class="g">CRIA</span><span class="p">DO RIO</span>'},
+    {id:"vip", nome:"VIP do Rio Litoral", html:'<span class="g">VIP</span><span class="p">DO RIO</span><span class="s">litoral</span>'},
+    {id:"forca", nome:"A Força do Rio Interior", html:'<span class="p">A FORÇA</span><span class="g">DO RIO</span><span class="l">INTERIOR</span>'},
+    {id:"gigantes", nome:"Gigantes da Leste", html:'<span class="g">GIGANTES</span><span class="l">DA LESTE</span>'},
+    {id:"vibe", nome:"Na Vibe do Consumer", html:'<span class="p">NA VIBE DO</span><span class="g">CONSUMER</span>'}
+  ];
+
+  const ESCALA = [
+    {n:1, r:"Importante"},
+    {n:2, r:"Ajuda bastante"},
+    {n:3, r:"Faz diferença"},
+    {n:4, r:"Prioridade"},
+    {n:5, r:"Muito importante"}
+  ];
+
+  const TEMAS = [
+    {id:"rotina_gv", nome:"Rotina GV"},
+    {id:"ppl", nome:"Dúvidas PPL"},
+    {id:"painel_parceiros", nome:"Painel parceiros"},
+    {id:"bi_navegacao", nome:"Painel BI Leste (navegação)"},
+    {id:"bi_temas", nome:"Temas específicos do BI", det:"Reports, Gestão, painéis e canais, parcial nacional, BSC Leste"},
+    {id:"venda_zero", nome:"Venda Zero"},
+    {id:"visoes_performance", nome:"Entendimento das visões de performance comercial"},
+    {id:"precificador", nome:"Precificador automático"},
+    {id:"experiencia_gl", nome:"Experiência Vivo GL"},
+    {id:"diagnosticos", nome:"Diagnósticos", det:"Smart e eletrônicos"},
+    {id:"raio_x", nome:"Entendimento do Raio X CEs"},
+    {id:"ea_nacional", nome:"Controle EA Nacional"},
+    {id:"toutbox_pipefy", nome:"Toutbox e Pipefy"},
+    {id:"gss", nome:"GSS – cadastro e movimentos"},
+    {id:"outros", nome:"Outros", det:"Sugira um tema que não está na lista (opcional)"}
+  ];
+  const TEMAS_OBRIG = TEMAS.filter(t=>t.id!=="outros");
+
+  const $ = s=>document.querySelector(s);
+  const esc = s=>String(s??"").replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
+  const nomeTerr = id => (TERRITORIOS.find(t=>t.id===id)||{}).nome || "—";
+
+  /* ---------- estado ---------- */
+  const estado = {territorio:null, notas:{}, outro:""};
+  let votos=[], filtro="todos", gpLiberado=false, senhaGP="", timerDash=null;
+  const configurado = /^https:\/\/script\.google\.com\//.test(URL_PLANILHA);
+
+  /* ---------- fundo de fórmulas ---------- */
+  (function(){
+    const cv=$("#formulas"), ctx=cv.getContext("2d");
+    const F=["a² + b² = c²","x = (−b ± √Δ) / 2a","Σ i = n(n+1)/2","E = mc²","sen²x + cos²x = 1","∫ f(x) dx","∇²φ + k²φ = 0","det(A) = |A|","y = cos x","eⁱᵖ + 1 = 0","lim x→∞","Δ = b² − 4ac","f(x) = 1/√(2π)","∂ψ/∂t","π r²","(n k)","√2","∞"];
+    const cores=["#ff2fa8","#b026ff","#d65cff","#ff6a3d","#8a2be2"];
+    let itens=[], W=0,H=0, dpr=Math.min(window.devicePixelRatio||1,2);
+    const reduz=window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+    function monta(){
+      W=cv.clientWidth; H=cv.clientHeight; cv.width=W*dpr; cv.height=H*dpr; ctx.setTransform(dpr,0,0,dpr,0,0);
+      const qtd=Math.round(Math.min(60,(W*H)/22000));
+      itens=Array.from({length:qtd},(_,i)=>{
+        const z=Math.random();
+        return {t:F[i%F.length],x:Math.random()*W,y:Math.random()*H,z,
+          s:12+z*26,a:.08+z*.32,r:(Math.random()-.5)*.5,c:cores[i%cores.length],
+          vx:(Math.random()-.5)*.08*(1+z),vy:-(.04+z*.12)};
+      });
+    }
+    function desenha(){
+      ctx.clearRect(0,0,W,H);
+      // linhas de fuga para o centro
+      ctx.strokeStyle="rgba(176,38,255,.05)"; ctx.lineWidth=1;
+      for(let i=0;i<24;i++){const ang=i/24*Math.PI*2;ctx.beginPath();ctx.moveTo(W/2,H*.55);ctx.lineTo(W/2+Math.cos(ang)*W,H*.55+Math.sin(ang)*W);ctx.stroke();}
+      for(const it of itens){
+        ctx.save();ctx.translate(it.x,it.y);ctx.rotate(it.r);
+        ctx.font=`${it.s}px Kalam, "Segoe Print", cursive`;
+        ctx.globalAlpha=it.a; ctx.fillStyle=it.c;
+        if(it.z>.7){ctx.shadowColor=it.c;ctx.shadowBlur=14;}
+        ctx.fillText(it.t,0,0);ctx.restore();
+      }
+    }
+    function passo(){
+      for(const it of itens){it.x+=it.vx;it.y+=it.vy;if(it.y<-40){it.y=H+30;it.x=Math.random()*W;}if(it.x<-200)it.x=W+20;if(it.x>W+200)it.x=-20;}
+      desenha(); if(!document.hidden) requestAnimationFrame(passo); else setTimeout(()=>requestAnimationFrame(passo),500);
+    }
+    monta(); desenha();
+    window.addEventListener("resize",()=>{monta();desenha();});
+    if(document.fonts&&document.fonts.ready) document.fonts.ready.then(desenha);
+    if(!reduz) requestAnimationFrame(passo);
+  })();
+
+  /* ---------- montar formulário ---------- */
+  function montaTerritorios(){
+    $("#territorios").innerHTML = TERRITORIOS.map(t=>`<button type="button" class="terr" data-t="${t.id}" aria-pressed="${estado.territorio===t.id}" aria-label="${esc(t.nome)}">${t.html}</button>`).join("");
+  }
+  $("#territorios").addEventListener("click",e=>{
+    const b=e.target.closest(".terr"); if(!b) return;
+    estado.territorio=b.dataset.t; montaTerritorios(); limpaMsg();
+  });
+
+  $("#escala").innerHTML = ESCALA.map(e=>`<div><b>${e.n}</b>${e.r}</div>`).join("");
+
+  function montaTemas(){
+    $("#temas").innerHTML = TEMAS.map(t=>{
+      const notas = ESCALA.map(e=>`<button type="button" class="nota" role="radio" aria-checked="${estado.notas[t.id]===e.n}" data-tema="${t.id}" data-n="${e.n}" aria-label="${e.n} – ${e.r}" title="${e.r}">${e.n}</button>`).join("");
+      const extra = t.id==="outros" ? `<textarea class="outro-txt" id="outro-txt" rows="1" maxlength="300" placeholder="Qual tema você gostaria de ver?">${esc(estado.outro)}</textarea>` : "";
+      return `<div class="tema" data-tema="${t.id}"><div class="nome">${esc(t.nome)}${t.det?`<span class="det">${esc(t.det)}</span>`:""}</div><div class="notas" role="radiogroup" aria-label="Nota para ${esc(t.nome)}">${notas}</div>${extra}</div>`;
+    }).join("");
+  }
+  $("#temas").addEventListener("click",e=>{
+    const b=e.target.closest(".nota"); if(!b) return;
+    const id=b.dataset.tema, n=+b.dataset.n;
+    estado.notas[id] = estado.notas[id]===n && id==="outros" ? undefined : n;
+    const linha=b.closest(".tema");
+    linha.querySelectorAll(".nota").forEach(x=>x.setAttribute("aria-checked", String(+x.dataset.n===estado.notas[id])));
+    linha.classList.remove("falta"); limpaMsg();
+  });
+  $("#temas").addEventListener("input",e=>{ if(e.target.id==="outro-txt") estado.outro=e.target.value; });
+
+  function limpaMsg(){ const m=$("#msg"); m.textContent=""; m.className="msg"; }
+  function msg(t,tipo){ const m=$("#msg"); m.textContent=t; m.className="msg "+(tipo||""); }
+
+  $("#enviar").addEventListener("click", async ()=>{
+    if(!estado.territorio){ msg("Escolha o seu território no passo 1.","erro"); document.querySelector(".quadro").scrollIntoView({behavior:"smooth",block:"center"}); return; }
+    const faltam = TEMAS_OBRIG.filter(t=>!estado.notas[t.id]);
+    document.querySelectorAll(".tema").forEach(l=>l.classList.toggle("falta", faltam.some(f=>f.id===l.dataset.tema)));
+    if(faltam.length){ msg(`Falta dar nota para ${faltam.length} ${faltam.length===1?"tema":"temas"} (destacados em vermelho).`,"erro"); return; }
+    const outroTxt=(estado.outro||"").trim();
+    if(outroTxt && !estado.notas.outros){ msg("Dê uma nota para o tema que você sugeriu em Outros.","erro"); return; }
+    const notas={}; TEMAS_OBRIG.forEach(t=>notas[t.id]=estado.notas[t.id]);
+    if(outroTxt && estado.notas.outros) notas.outros=estado.notas.outros;
+    const doc={territorio:estado.territorio, notas, outro:outroTxt, enviadoEm:new Date().toISOString()};
+    if(!configurado){ msg("A votação ainda não foi ligada à planilha. Avise o time Consumer.","erro"); return; }
+    const btn=$("#enviar"); btn.disabled=true; msg("Enviando…");
+    try{
+      doc.id = pegaIdLocal();
+      // text/plain evita bloqueio de segurança do navegador (CORS) no Apps Script
+      await fetch(URL_PLANILHA,{method:"POST",mode:"no-cors",headers:{"Content-Type":"text/plain;charset=utf-8"},body:JSON.stringify(doc)});
+      $("#form-voto").hidden=true; $("#obrigado").hidden=false;
+      $("#obrigado-txt").textContent=`Obrigado! Seu voto pelo território ${nomeTerr(estado.territorio)} foi registrado. Se quiser, você pode revisar e enviar de novo: vale sempre o último envio.`;
+      window.scrollTo({top:0,behavior:"smooth"});
+      limpaMsg();
+    }catch(err){
+      msg("Não foi possível enviar agora. Verifique a internet e tente de novo.","erro");
+    }finally{ btn.disabled=false; }
+  });
+  $("#rever").addEventListener("click",()=>{ $("#obrigado").hidden=true; $("#form-voto").hidden=false; });
+
+  function pegaIdLocal(){
+    let id=null;
+    try{ id=localStorage.getItem("pdg-voto-id"); }catch(e){}
+    if(!id){ id="v"+Date.now().toString(36)+Math.random().toString(36).slice(2,8); try{localStorage.setItem("pdg-voto-id",id);}catch(e){} }
+    return id;
+  }
+
+  /* ---------- abas ---------- */
+  function abre(qual){
+    const v=qual==="votar";
+    $("#aba-votar").setAttribute("aria-selected",String(v));
+    $("#aba-consumer").setAttribute("aria-selected",String(!v));
+    $("#tela-votar").hidden=!v; $("#tela-consumer").hidden=v;
+    if(!v && !gpLiberado) setTimeout(()=>$("#senha").focus(),30);
+  }
+  $("#aba-votar").addEventListener("click",()=>abre("votar"));
+  $("#aba-consumer").addEventListener("click",()=>abre("consumer"));
+
+  async function buscaVotos(senha){
+    const r = await fetch(URL_PLANILHA+"?acao=resultados&senha="+encodeURIComponent(senha));
+    return r.json();
+  }
+  async function carregaDash(){
+    try{
+      const j = await buscaVotos(senhaGP);
+      if(!j.ok) throw new Error(j.erro||"erro");
+      votos = j.votos||[];
+      $("#atualizado").textContent="Atualizado às "+new Date().toLocaleTimeString("pt-BR",{hour:"2-digit",minute:"2-digit"});
+      renderDash();
+    }catch(e){ $("#atualizado").textContent="Sem conexão com a planilha"; }
+  }
+  $("#login").addEventListener("submit",async e=>{
+    e.preventDefault();
+    const m=$("#msg-login"), senha=$("#senha").value;
+    if(!configurado){ m.textContent="A página ainda não foi ligada à planilha."; m.className="msg erro"; return; }
+    m.textContent="Verificando…"; m.className="msg";
+    try{
+      const j = await buscaVotos(senha);
+      if(!j.ok){ m.textContent="Senha incorreta. Confira maiúsculas e minúsculas."; m.className="msg erro"; return; }
+      senhaGP=senha; votos=j.votos||[]; gpLiberado=true;
+      $("#login").hidden=true; $("#dash").hidden=false; m.textContent=""; $("#senha").value="";
+      $("#atualizado").textContent="Atualizado às "+new Date().toLocaleTimeString("pt-BR",{hour:"2-digit",minute:"2-digit"});
+      renderDash();
+      clearInterval(timerDash); timerDash=setInterval(carregaDash,60000);
+    }catch(err){ m.textContent="Não foi possível falar com a planilha. Verifique a internet."; m.className="msg erro"; }
+  });
+  $("#recarregar").addEventListener("click",carregaDash);
+  $("#sair").addEventListener("click",()=>{ gpLiberado=false; senhaGP=""; votos=[]; clearInterval(timerDash); $("#dash").hidden=true; $("#login").hidden=false; });
+
+  /* ---------- dashboard ---------- */
+  function montaFiltros(){
+    const opts=[{id:"todos",nome:"Todos"}].concat(TERRITORIOS);
+    $("#filtros").innerHTML=opts.map(o=>`<button type="button" class="chip" data-f="${o.id}" aria-pressed="${filtro===o.id}">${esc(o.nome)}</button>`).join("");
+  }
+  $("#filtros").addEventListener("click",e=>{const b=e.target.closest(".chip"); if(!b) return; filtro=b.dataset.f; renderDash();});
+
+  const fmt = n => n.toLocaleString("pt-BR",{minimumFractionDigits:1,maximumFractionDigits:1});
+
+  function renderDash(){
+    if(!gpLiberado) return;
+    montaFiltros();
+    const lista = filtro==="todos" ? votos : votos.filter(v=>v.territorio===filtro);
+    const stats = TEMAS_OBRIG.map(t=>{
+      const ns=lista.map(v=>v.notas&&v.notas[t.id]).filter(n=>n>=1&&n<=5);
+      const media=ns.length? ns.reduce((a,b)=>a+b,0)/ns.length : 0;
+      return {t, media, qtd:ns.length, cinco:ns.filter(n=>n===5).length, um:ns.filter(n=>n===1).length};
+    }).sort((a,b)=>b.media-a.media || b.cinco-a.cinco);
+
+    const terrCont = TERRITORIOS.map(t=>({t, n:votos.filter(v=>v.territorio===t.id).length}));
+    const maisPart = terrCont.slice().sort((a,b)=>b.n-a.n)[0];
+    const top = stats[0];
+
+    $("#kpis").innerHTML = `
+      <div class="kpi"><div class="r">Votos ${filtro==="todos"?"recebidos":"no território"}</div><div class="v">${lista.length}</div><div class="d">${filtro==="todos"?"GVs de todos os territórios":esc(nomeTerr(filtro))}</div></div>
+      <div class="kpi"><div class="r">Tema mais pedido</div><div class="v txt">${lista.length?esc(top.t.nome):"—"}</div><div class="d">${lista.length?`Média ${fmt(top.media)} · ${top.cinco} notas 5`:"Aguardando votos"}</div></div>
+      <div class="kpi"><div class="r">Território que mais votou</div><div class="v txt">${votos.length&&maisPart.n?esc(maisPart.t.nome):"—"}</div><div class="d">${votos.length&&maisPart.n?`${maisPart.n} ${maisPart.n===1?"voto":"votos"}`:"Aguardando votos"}</div></div>`;
+
+    if(!lista.length){
+      $("#rank").innerHTML=`<div class="vazio">Nenhum voto ${filtro==="todos"?"ainda":"deste território ainda"}.</div>`;
+    }else{
+      $("#rank").innerHTML = stats.map((s,i)=>`
+        <div class="linha${i<3?" top":""}" tabindex="0" aria-label="${esc(s.t.nome)}: média ${fmt(s.media)}">
+          <span class="pos">${i+1}</span>
+          <span class="tn">${esc(s.t.nome)}</span>
+          <span class="barra"><i style="width:${(s.media/5*100).toFixed(1)}%"></i></span>
+          <span class="val">${fmt(s.media)}</span>
+          <span class="dica">${s.cinco} notas 5 · ${s.um} notas 1 · ${s.qtd} votos</span>
+        </div>`).join("");
+    }
+
+    const maxT=Math.max(1,...terrCont.map(x=>x.n));
+    $("#dist").innerHTML = terrCont.map(x=>`<div class="t"><b>${x.n}</b><span>${esc(x.t.nome)}</span><div class="minibar"><i style="width:${(x.n/maxT*100).toFixed(0)}%"></i></div></div>`).join("");
+
+    const outros = lista.filter(v=>v.outro).sort((a,b)=>(b.notas?.outros||0)-(a.notas?.outros||0));
+    $("#outros").innerHTML = outros.length ? outros.map(v=>`<tr><td>${esc(nomeTerr(v.territorio))}</td><td>${esc(v.outro)}</td><td class="num">${v.notas?.outros||"—"}</td></tr>`).join("")
+      : `<tr><td colspan="3" class="vazio">Nenhuma sugestão até agora.</td></tr>`;
+
+    $("#tabela").innerHTML = stats.map(s=>`<tr><td>${esc(s.t.nome)}</td><td class="num">${s.qtd?fmt(s.media):"—"}</td><td class="num">${s.cinco}</td><td class="num">${s.um}</td><td class="num">${s.qtd}</td></tr>`).join("");
+  }
+
+  /* ---------- início ---------- */
+  montaTerritorios(); montaTemas();
+
+  if(!configurado){
+    const a=$("#aviso-db"); a.hidden=false;
+    a.textContent="Página ainda não ligada à planilha: cole a URL do Apps Script em URL_PLANILHA.";
+  }else{
+    // traz o voto anterior deste aparelho, se houver, para revisar
+    let idLocal=null; try{ idLocal=localStorage.getItem("pdg-voto-id"); }catch(e){}
+    if(idLocal){
+      fetch(URL_PLANILHA+"?acao=meuvoto&id="+encodeURIComponent(idLocal)).then(r=>r.json()).then(j=>{
+        if(j.ok && j.voto && !estado.territorio && !Object.keys(estado.notas).length){
+          estado.territorio=j.voto.territorio; estado.notas={...j.voto.notas}; estado.outro=j.voto.outro||"";
+          montaTerritorios(); montaTemas();
+        }
+      }).catch(()=>{});
+    }
+  }
+})();
+</script>
+</body>
+</html>
