@@ -3,10 +3,10 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<title>O Pulo do Gato – Revendas</title>
+<title>A Áudio Técnica Voltou – Revendas</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Cabin+Sketch:wght@400;700&family=Kalam:wght@300;400&family=Figtree:wght@400;500;600;700&display=swap">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Cabin+Sketch:wght@400;700&family=Playfair+Display:ital,wght@0,700;1,700&family=Kalam:wght@300;400&family=Figtree:wght@400;500;600;700&display=swap">
 <style>
 :root{
   color-scheme: dark;
@@ -26,6 +26,7 @@
   --ok:#3fd68a;
   --erro:#ff6b6b;
   --f-titulo:"Cabin Sketch","Comic Sans MS",cursive;
+  --f-marca:"Playfair Display",Georgia,"Times New Roman",serif;
   --f-giz:"Kalam","Segoe Print",cursive;
   --f-corpo:"Figtree",system-ui,-apple-system,"Segoe UI",sans-serif;
 }
@@ -38,9 +39,9 @@ body{font-family:var(--f-corpo);font-size:15px;line-height:1.5;min-height:100%;p
 
 /* topo */
 .topo{display:flex;align-items:center;justify-content:space-between;gap:16px;padding-block:28px 8px;flex-wrap:wrap}
-.marca h1{font-family:var(--f-titulo);font-weight:400;font-size:clamp(34px,7vw,64px);letter-spacing:.06em;line-height:1;margin:0;text-transform:uppercase;text-wrap:balance;text-shadow:0 0 12px rgba(255,255,255,.15)}
-.marca h1 b{font-weight:700;color:#fff}
-.marca .sub{font-family:var(--f-titulo);font-size:clamp(18px,3.4vw,28px);letter-spacing:.34em;text-transform:uppercase;color:var(--magenta);margin-top:6px;text-shadow:0 0 14px rgba(255,47,168,.6)}
+.marca h1{font-family:var(--f-marca);font-weight:700;font-size:clamp(34px,6.4vw,62px);letter-spacing:0;line-height:1.05;margin:0;text-wrap:balance;text-shadow:0 0 12px rgba(255,255,255,.15)}
+.marca h1 em{font-style:italic;color:var(--magenta);text-shadow:0 0 16px rgba(255,47,168,.55)}
+.marca .sub{font-family:var(--f-corpo);font-weight:600;font-size:clamp(14px,2.4vw,20px);letter-spacing:.34em;text-transform:uppercase;color:var(--ink-2);margin-top:6px;text-shadow:0 0 14px rgba(255,47,168,.6)}
 .pilula{flex:none;width:150px;height:70px;border-radius:40px;border:3px solid var(--purpura);box-shadow:var(--glow),inset 0 0 18px rgba(176,38,255,.45);display:grid;place-items:center end;padding-right:12px;position:relative}
 .pilula svg{width:62px;height:56px;filter:drop-shadow(0 0 6px var(--magenta))}
 
@@ -179,7 +180,7 @@ td.num{text-align:right;font-variant-numeric:tabular-nums}
 <div class="wrap">
   <header class="topo">
     <div class="marca">
-      <h1>O Pulo do <b>Gato</b></h1>
+      <h1>A áudio técnica <em>voltou</em></h1>
       <div class="sub">Revendas</div>
     </div>
     <div class="pilula" aria-hidden="true">
