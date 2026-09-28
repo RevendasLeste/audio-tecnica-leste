@@ -127,7 +127,8 @@ section.bloco{margin-bottom:36px}
 /* dashboard */
 .dash-topo{display:flex;flex-wrap:wrap;gap:10px;justify-content:space-between;align-items:center;margin-bottom:16px}
 .dash-topo h2{margin:0;font-size:22px}
-.filtros{display:flex;flex-wrap:wrap;gap:6px;margin-bottom:18px}
+.filtros{display:flex;flex-wrap:wrap;gap:6px;align-items:center;margin-bottom:18px}
+.dica-filtro{flex-basis:100%;font-size:12px;color:var(--ink-3)}
 .chip{appearance:none;border:1px solid var(--line);background:var(--surface);color:var(--ink-2);border-radius:999px;padding:7px 13px;font:600 13px var(--f-corpo);cursor:pointer}
 .chip[aria-pressed="true"]{background:var(--ink);color:var(--bg);border-color:var(--ink)}
 .kpis{display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:10px;margin-bottom:22px}
@@ -169,6 +170,11 @@ td.num{text-align:right;font-variant-numeric:tabular-nums}
 .vazio{color:var(--ink-3);font-size:14px;padding:6px 0}
 .selo{display:inline-block;font-size:11px;padding:2px 8px;border-radius:999px;background:var(--surface-2);color:var(--ink-2);border:1px solid var(--line)}
 
+.zerar{border-color:rgba(255,107,107,.35)}
+.zerar h3{color:var(--erro)}
+.zerar-form{display:flex;flex-wrap:wrap;gap:10px;align-items:center;margin-top:12px}
+.zerar-form input{flex:1 1 220px;background:var(--bg-2);border:1px solid var(--line);border-radius:8px;color:var(--ink);font:15px var(--f-corpo);padding:11px 12px}
+.btn.perigo{background:#c0392b;box-shadow:none}
 @media (prefers-reduced-motion:reduce){*{transition:none!important}}
 </style>
 </head>
@@ -265,6 +271,18 @@ td.num{text-align:right;font-variant-numeric:tabular-nums}
         <p class="exp">Média, quantidade de notas 5 e notas 1 por tema.</p>
         <div class="tabela-wrap"><table><thead><tr><th>Tema</th><th class="num">Média</th><th class="num">Notas 5</th><th class="num">Notas 1</th><th class="num">Votos</th></tr></thead><tbody id="tabela"></tbody></table></div>
       </div>
+
+      <div class="painel zerar">
+        <h3>Zerar votação</h3>
+        <p class="exp">Use para começar uma nova rodada. Os votos atuais são guardados numa aba de arquivo na planilha e o painel volta para zero.</p>
+        <button type="button" class="btn sec" id="zerar-abrir">Zerar votos</button>
+        <form class="zerar-form" id="zerar-form" hidden>
+          <input id="zerar-senha" type="password" autocomplete="off" placeholder="Senha para zerar" aria-label="Senha para zerar">
+          <button type="submit" class="btn perigo">Confirmar e zerar</button>
+          <button type="button" class="btn sec" id="zerar-cancelar">Cancelar</button>
+        </form>
+        <p class="msg" id="zerar-msg" role="status" aria-live="polite"></p>
+      </div>
     </div>
   </main>
 </div>
@@ -318,7 +336,7 @@ td.num{text-align:right;font-variant-numeric:tabular-nums}
 
   /* ---------- estado ---------- */
   const estado = {territorio:null, notas:{}, outro:""};
-  let votos=[], filtro="todos", gpLiberado=false, senhaGP="", timerDash=null;
+  let votos=[], filtro=new Set(), gpLiberado=false, senhaGP="", timerDash=null;
   const configurado = /^https:\/\/script\.google\.com\//.test(URL_PLANILHA);
 
   /* ---------- fundo de fórmulas ---------- */
@@ -465,21 +483,53 @@ td.num{text-align:right;font-variant-numeric:tabular-nums}
     }catch(err){ m.textContent="Não foi possível falar com a planilha. Verifique a internet."; m.className="msg erro"; }
   });
   $("#recarregar").addEventListener("click",carregaDash);
+  $("#zerar-abrir").addEventListener("click",()=>{ $("#zerar-form").hidden=false; $("#zerar-abrir").hidden=true; $("#zerar-msg").textContent=""; $("#zerar-senha").focus(); });
+  $("#zerar-cancelar").addEventListener("click",()=>{ $("#zerar-form").hidden=true; $("#zerar-abrir").hidden=false; $("#zerar-senha").value=""; $("#zerar-msg").textContent=""; });
+  $("#zerar-form").addEventListener("submit",async e=>{
+    e.preventDefault();
+    const m=$("#zerar-msg"), senha=$("#zerar-senha").value;
+    if(!senha){ m.textContent="Digite a senha para zerar."; m.className="msg erro"; return; }
+    m.textContent="Zerando…"; m.className="msg";
+    try{
+      const r=await fetch(URL_PLANILHA+"?acao=zerar&senha="+encodeURIComponent(senha));
+      const j=await r.json();
+      if(!j.ok){ m.textContent = j.erro==="senha" ? "Senha incorreta. Nada foi apagado." : "Não foi possível zerar agora. Tente de novo."; m.className="msg erro"; return; }
+      votos=[]; renderDash();
+      $("#zerar-form").hidden=true; $("#zerar-abrir").hidden=false; $("#zerar-senha").value="";
+      m.textContent = j.arquivados ? `Votação zerada. ${j.arquivados} ${j.arquivados===1?"voto foi guardado":"votos foram guardados"} na aba "${j.aba}" da planilha.` : "Votação zerada. Não havia votos para guardar.";
+      m.className="msg ok";
+    }catch(err){ m.textContent="Não foi possível falar com a planilha. Verifique a internet."; m.className="msg erro"; }
+  });
   $("#sair").addEventListener("click",()=>{ gpLiberado=false; senhaGP=""; votos=[]; clearInterval(timerDash); $("#dash").hidden=true; $("#login").hidden=false; });
 
   /* ---------- dashboard ---------- */
+  // Filtro com seleção múltipla: conjunto vazio = todos os territórios
+  const todosMarcados = ()=> filtro.size===0;
   function montaFiltros(){
     const opts=[{id:"todos",nome:"Todos"}].concat(TERRITORIOS);
-    $("#filtros").innerHTML=opts.map(o=>`<button type="button" class="chip" data-f="${o.id}" aria-pressed="${filtro===o.id}">${esc(o.nome)}</button>`).join("");
+    $("#filtros").innerHTML=opts.map(o=>{
+      const on = o.id==="todos" ? todosMarcados() : filtro.has(o.id);
+      return `<button type="button" class="chip" data-f="${o.id}" aria-pressed="${on}">${esc(o.nome)}</button>`;
+    }).join("") + `<span class="dica-filtro">Toque em mais de um território para somar os votos.</span>`;
   }
-  $("#filtros").addEventListener("click",e=>{const b=e.target.closest(".chip"); if(!b) return; filtro=b.dataset.f; renderDash();});
+  $("#filtros").addEventListener("click",e=>{
+    const b=e.target.closest(".chip"); if(!b) return;
+    const id=b.dataset.f;
+    if(id==="todos") filtro.clear();
+    else{
+      if(filtro.has(id)) filtro.delete(id); else filtro.add(id);
+      if(filtro.size===TERRITORIOS.length) filtro.clear(); // marcou todos = Todos
+    }
+    renderDash();
+  });
+  const nomesSel = ()=> TERRITORIOS.filter(t=>filtro.has(t.id)).map(t=>t.nome);
 
   const fmt = n => n.toLocaleString("pt-BR",{minimumFractionDigits:1,maximumFractionDigits:1});
 
   function renderDash(){
     if(!gpLiberado) return;
     montaFiltros();
-    const lista = filtro==="todos" ? votos : votos.filter(v=>v.territorio===filtro);
+    const lista = todosMarcados() ? votos : votos.filter(v=>filtro.has(v.territorio));
     const stats = TEMAS_OBRIG.map(t=>{
       const ns=lista.map(v=>v.notas&&v.notas[t.id]).filter(n=>n>=1&&n<=5);
       const media=ns.length? ns.reduce((a,b)=>a+b,0)/ns.length : 0;
@@ -491,12 +541,12 @@ td.num{text-align:right;font-variant-numeric:tabular-nums}
     const top = stats[0];
 
     $("#kpis").innerHTML = `
-      <div class="kpi"><div class="r">Votos ${filtro==="todos"?"recebidos":"no território"}</div><div class="v">${lista.length}</div><div class="d">${filtro==="todos"?"GVs de todos os territórios":esc(nomeTerr(filtro))}</div></div>
+      <div class="kpi"><div class="r">Votos ${todosMarcados()?"recebidos":(filtro.size===1?"no território":"nos territórios")}</div><div class="v">${lista.length}</div><div class="d">${todosMarcados()?"GVs de todos os territórios":esc(nomesSel().join(" + "))}</div></div>
       <div class="kpi"><div class="r">Tema mais pedido</div><div class="v txt">${lista.length?esc(top.t.nome):"—"}</div><div class="d">${lista.length?`Média ${fmt(top.media)} · ${top.cinco} notas 5`:"Aguardando votos"}</div></div>
       <div class="kpi"><div class="r">Território que mais votou</div><div class="v txt">${votos.length&&maisPart.n?esc(maisPart.t.nome):"—"}</div><div class="d">${votos.length&&maisPart.n?`${maisPart.n} ${maisPart.n===1?"voto":"votos"}`:"Aguardando votos"}</div></div>`;
 
     if(!lista.length){
-      $("#rank").innerHTML=`<div class="vazio">Nenhum voto ${filtro==="todos"?"ainda":"deste território ainda"}.</div>`;
+      $("#rank").innerHTML=`<div class="vazio">Nenhum voto ${todosMarcados()?"ainda":(filtro.size===1?"deste território ainda":"destes territórios ainda")}.</div>`;
     }else{
       $("#rank").innerHTML = stats.map((s,i)=>`
         <div class="linha${i<3?" top":""}" tabindex="0" aria-label="${esc(s.t.nome)}: média ${fmt(s.media)}">
